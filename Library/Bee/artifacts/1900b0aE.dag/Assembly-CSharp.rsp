@@ -350,6 +350,7 @@
 "Assets/Script/Grid.cs"
 "Assets/Script/Node.cs"
 "Assets/Script/PathFinding.cs"
+"Assets/Script/Utils/Heap.cs"
 -langversion:9.0
 
 /deterministic

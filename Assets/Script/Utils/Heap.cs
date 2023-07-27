@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
+
 public class Heap<T> where T : IHeapItem<T>
 {
     T[] items;
@@ -90,23 +91,23 @@ public class Heap<T> where T : IHeapItem<T>
 
     // itemA and itemB must different
     // ref: https://dotblogs.com.tw/abbee/2010/09/27/17910
-    /*void Swap(T itemA, T itemB)
+    void Swap(T itemA, T itemB)
     {
         items[itemA.HeapIndex] = itemB;
         items[itemB.HeapIndex] = itemA;
         itemA.HeapIndex ^= itemB.HeapIndex;
         itemB.HeapIndex ^= itemA.HeapIndex;
         itemA.HeapIndex ^= itemB.HeapIndex;
-    }*/
+    }
 
-    void Swap(T itemA, T itemB)
+    /*void Swap(T itemA, T itemB)
     {
         items[itemA.HeapIndex] = itemB;
         items[itemB.HeapIndex] = itemA;
         int itemAIndex = itemA.HeapIndex;
         itemA.HeapIndex = itemB.HeapIndex;
         itemB.HeapIndex = itemAIndex;
-    }
+    }*/
 
 }
 

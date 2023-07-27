@@ -58,7 +58,9 @@
   <ItemGroup>
     <Compile Include="Assets\Script\Node.cs" />
     <Compile Include="Assets\Script\PathFinding.cs" />
+    <Compile Include="Assets\Script\Utils\Heap.cs" />
     <Compile Include="Assets\Script\Grid.cs" />
+    <Compile Include="Assets\Script\PathRequestManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

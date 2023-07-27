@@ -51,8 +51,9 @@ public class PathFinding : MonoBehaviour
             //openSet.Remove(currrentNode);
             //closedSet.Add(currrentNode);
 
-            Node currrentNode = openSet.RemoveFirst();
 
+            Node currrentNode = openSet.RemoveFirst();
+            closedSet.Add(currrentNode);
             if (currrentNode == targetNode)
             {
                 sw.Stop();

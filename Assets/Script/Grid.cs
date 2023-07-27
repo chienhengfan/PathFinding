@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Grid : MonoBehaviour
 {
+    public bool onlyDisplayPathGizmos;
     public Transform player;
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
@@ -22,6 +23,7 @@ public class Grid : MonoBehaviour
         CreatGrid();
     }
 
+    public int MaxSize => gridSizeX * gridSizeY;
     void CreatGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
@@ -70,21 +72,36 @@ public class Grid : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 1, gridWorldSize.y));
-        if(grid != null)
+
+        if (onlyDisplayPathGizmos)
         {
-            Node playerNode = NodeFromWorldPosition(player.position);
-            foreach( Node n in grid)
+            if (path != null)
             {
-                Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                if(path != null && path.Contains(n))
+                foreach (Node n in path)
                 {
                     Gizmos.color = Color.black;
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
                 }
-                if(playerNode == n)
+            }
+        }
+        else
+        {
+            if (grid != null)
+            {
+                Node playerNode = NodeFromWorldPosition(player.position);
+                foreach (Node n in grid)
                 {
-                    Gizmos.color = Color.cyan;
+                    Gizmos.color = (n.walkable) ? Color.white : Color.red;
+                    if (path != null && path.Contains(n))
+                    {
+                        Gizmos.color = Color.black;
+                    }
+                    if (playerNode == n)
+                    {
+                        Gizmos.color = Color.cyan;
+                    }
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
                 }
-                Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
             }
         }
     }

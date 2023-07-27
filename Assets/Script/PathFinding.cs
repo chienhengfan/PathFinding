@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Diagnostics;
 
 public class PathFinding : MonoBehaviour
 {
@@ -14,34 +15,33 @@ public class PathFinding : MonoBehaviour
 
     private void Update()
     {
-        FindPath(seeker.position, target.position);
+        if (Input.GetButtonDown("Jump"))
+        {
+            FindPath(seeker.position, target.position);
+        }       
     }
     void FindPath(Vector3 startPos, Vector3 targetPos)
     {
+        // performance diagnose, stop at finding the path
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+
         Node startNode = grid.NodeFromWorldPosition(startPos);
         Node targetNode = grid.NodeFromWorldPosition(targetPos);
 
-        List<Node> openSet = new List<Node>();
+        Heap<Node> openSet = new Heap<Node>(grid.MaxSize);
         HashSet<Node> closedSet = new HashSet<Node>();
 
         openSet.Add(startNode);
 
         while(openSet.Count > 0)
         {
-            Node currrentNode = openSet[0];
-            for(int i = 0; i < openSet.Count; i++)
-            {
-                if(openSet[i].fCost < currrentNode.fCost || openSet[i].fCost == currrentNode.fCost && openSet[i].hCost < currrentNode.hCost)
-                {
-                    currrentNode = openSet[i];
-                }
-            }
-            
-            openSet.Remove(currrentNode);
-            closedSet.Add(currrentNode);
+            Node currrentNode = openSet.RemoveFirst();
 
-            if(currrentNode == targetNode)
+            if (currrentNode == targetNode)
             {
+                sw.Stop();
+                print("Path found :" + sw.ElapsedMilliseconds + " ms");
                 ReTracePath(startNode, targetNode);
                 return;
             }

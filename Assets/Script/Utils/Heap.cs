@@ -31,7 +31,11 @@ public class Heap<T> where T : IHeapItem<T>
         return firstItem;
     }
 
-    public int Count { get{ return currentItemCount; } }
+    public void UpdateItem(T item)
+    {
+        SortUp(item);
+    }
+    public int Count => currentItemCount;
     public bool Contains( T item)
     {
         return Equals(items[item.HeapIndex], item);
@@ -40,7 +44,6 @@ public class Heap<T> where T : IHeapItem<T>
     void SortUp(T item)
     {
         int parentIndex = (item.HeapIndex - 1) / 2;
-
         while (true)
         {
             T parentItem = items[parentIndex];
@@ -48,11 +51,8 @@ public class Heap<T> where T : IHeapItem<T>
             {
                 Swap(item, parentItem);
             }
-            else
-            {
-                break;
-            }
-            parentItem = items[parentIndex];
+            else { break; }
+            parentIndex = (item.HeapIndex - 1) / 2;
         }
     }
 
@@ -90,13 +90,22 @@ public class Heap<T> where T : IHeapItem<T>
 
     // itemA and itemB must different
     // ref: https://dotblogs.com.tw/abbee/2010/09/27/17910
+    /*void Swap(T itemA, T itemB)
+    {
+        items[itemA.HeapIndex] = itemB;
+        items[itemB.HeapIndex] = itemA;
+        itemA.HeapIndex ^= itemB.HeapIndex;
+        itemB.HeapIndex ^= itemA.HeapIndex;
+        itemA.HeapIndex ^= itemB.HeapIndex;
+    }*/
+
     void Swap(T itemA, T itemB)
     {
-        int indexA = itemA.HeapIndex;
-        int indexB = itemB.HeapIndex;
-        indexA ^= indexB;
-        indexB ^= indexA;
-        indexA ^= indexB;
+        items[itemA.HeapIndex] = itemB;
+        items[itemB.HeapIndex] = itemA;
+        int itemAIndex = itemA.HeapIndex;
+        itemA.HeapIndex = itemB.HeapIndex;
+        itemB.HeapIndex = itemAIndex;
     }
 
 }

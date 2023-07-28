@@ -9,7 +9,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6DF6D9AB-509D-DA76-DD42-399A7AD6FF54}</ProjectGuid>
+    <ProjectGuid>{ED04DC06-2331-8A03-C348-D59CF084D6CD}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -57,10 +57,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Script\Node.cs" />
+    <Compile Include="Assets\Script\PathRequestManager.cs" />
     <Compile Include="Assets\Script\PathFinding.cs" />
     <Compile Include="Assets\Script\Utils\Heap.cs" />
     <Compile Include="Assets\Script\Grid.cs" />
-    <Compile Include="Assets\Script\PathRequestManager.cs" />
+    <Compile Include="Assets\Script\Unit.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -314,12 +315,6 @@
     </Reference>
     <Reference Include="ReportGeneratorMerged">
       <HintPath>Library\PackageCache\com.unity.testtools.codecoverage@1.2.2\lib\ReportGenerator\ReportGeneratorMerged.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Types">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.24f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Types.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Android.Gradle">
-      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.24f1\Editor\Data\PlaybackEngines\AndroidPlayer\Unity.Android.Gradle.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.24f1\Editor\Data\NetStandard\ref\2.1.0\netstandard.dll</HintPath>

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System.Diagnostics;
+using System;
 
 public class PathFinding : MonoBehaviour
 {
@@ -89,8 +90,26 @@ public class PathFinding : MonoBehaviour
             path.Add(currentNode);
             currentNode = currentNode.parrent;
         }
+        Vector3[] wayPoints = SimplifyPath(path);
+        Array.Reverse(wayPoints);
+        return wayPoints;
+    }
 
-        path.Reverse();
+    public Vector3[] SimplifyPath(List<Node> path)
+    {
+        List<Vector3> wayPoints = new List<Vector3>();
+        Vector2 directionOld = Vector2.zero;
+
+        for(int i = 1; i < path.Count; i++)
+        {
+            Vector2 directionNew = new Vector2(path[i - 1].gridX - path[i].gridX, path[i - 1].gridY - path[i].gridY);
+            if(directionNew != directionOld)
+            {
+                wayPoints.Add(path[i].worldPosition);
+            }
+            directionOld = directionNew;
+        }
+        return wayPoints.ToArray();
     }
     int GetDistance(Node nodeA, Node nodeB)
     {

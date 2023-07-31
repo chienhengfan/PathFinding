@@ -9,21 +9,38 @@ public class Grid : MonoBehaviour
     public LayerMask unwalkableMask;
     public Vector2 gridWorldSize;
     public float nodeRadius;
+    public TerrainType[] walkableRegions;
+    public LayerMask walkableMask;
+    private Dictionary<int, int> walkableRegionDictionary = new Dictionary<int, int>();
+
     Node[,] grid;
 
     float nodeDiameter;
     int gridSizeX, gridSizeY;
-    
+    public int MaxSize => gridSizeX * gridSizeY;
+
     // At PathFinding 15, we get Grid component,thus we should CreateGrid() at Awake
     private void Awake()
     {
         nodeDiameter = nodeRadius * 2;
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
+
+        foreach(TerrainType region in walkableRegions)
+        {
+            walkableMask.value |= region.terrainMask.value;
+            // change binary number to integer (0010 0000 0000 = 2 ^ 9 >> 9)  
+            walkableRegionDictionary.Add((int)Mathf.Log(region.terrainMask, 2), region.terrainPenalty);
+        }
         CreatGrid();
     }
 
-    public int MaxSize => gridSizeX * gridSizeY;
+    [System.Serializable]
+    public class TerrainType
+    {
+        public LayerMask terrainMask;
+        public int terrainPenalty;
+    }
     void CreatGrid()
     {
         grid = new Node[gridSizeX, gridSizeY];
@@ -34,7 +51,19 @@ public class Grid : MonoBehaviour
             {
                 Vector3 worldPoint = worldButtonLeft + Vector3.right * (x * nodeDiameter + nodeRadius) + Vector3.forward * (y * nodeDiameter + nodeRadius);
                 bool walkable = !(Physics.CheckSphere(worldPoint, nodeRadius, unwalkableMask));
-                grid[x, y] = new Node(walkable, worldPoint,x , y);
+                int movementPenalty = 0;
+
+                //raycast to add terrainpenalty
+                if (walkable)
+                {
+                    Ray ray = new Ray(worldPoint + Vector3.up * 50, Vector3.down);
+                    RaycastHit hit;
+                    if(Physics.Raycast(ray, out hit, 100, walkableMask))
+                    {
+                        walkableRegionDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
+                    }
+                }
+                grid[x, y] = new Node(walkable, worldPoint,x , y, movementPenalty);
             }
         }
     }

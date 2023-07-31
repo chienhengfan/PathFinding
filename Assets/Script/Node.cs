@@ -9,22 +9,22 @@ public class Node:IHeapItem<Node>
 
     public int gCost;
     public int hCost;
-
     public int gridX;
     public int gridY;
+    public int movementPenalty;
 
     public Node parrent;
 
     private int heapIndex;
     public int HeapIndex { get => heapIndex; set { heapIndex = value; } }
     public int fCost { get { return gCost + hCost; } }
-    public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY)
+    public Node(bool _walkable, Vector3 _worldPos, int _gridX, int _gridY, int _penalty)
     {
         walkable = _walkable;
         worldPosition = _worldPos;
         gridX = _gridX;
         gridY = _gridY;
-
+        movementPenalty = _penalty;
     }
 
     public int CompareTo(Node nodeToCompare)

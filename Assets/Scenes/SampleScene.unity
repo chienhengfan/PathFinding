@@ -652,7 +652,7 @@ MonoBehaviour:
   - terrainMask:
       serializedVersion: 2
       m_Bits: 512
-    terrainPenalty: 40
+    terrainPenalty: 20
   walkableMask:
     serializedVersion: 2
     m_Bits: 0

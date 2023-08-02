@@ -58,6 +58,8 @@
   <ItemGroup>
     <Compile Include="Assets\Script\Node.cs" />
     <Compile Include="Assets\Script\PathRequestManager.cs" />
+    <Compile Include="Assets\Script\Line.cs" />
+    <Compile Include="Assets\Script\Path.cs" />
     <Compile Include="Assets\Script\Unit.cs" />
     <Compile Include="Assets\Script\PathFinding.cs" />
     <Compile Include="Assets\Script\Utils\Heap.cs" />

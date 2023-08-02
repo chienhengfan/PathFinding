@@ -11,12 +11,15 @@ public class Grid : MonoBehaviour
     public float nodeRadius;
     public TerrainType[] walkableRegions;
     public LayerMask walkableMask;
+    public int obstacleProximityPenalty = 10;
     private Dictionary<int, int> walkableRegionDictionary = new Dictionary<int, int>();
 
     Node[,] grid;
 
     float nodeDiameter;
     int gridSizeX, gridSizeY;
+    int penaltyMin = int.MaxValue;
+    int penaltyMax = int.MinValue;
     public int MaxSize => gridSizeX * gridSizeY;
 
     // At PathFinding 15, we get Grid component,thus we should CreateGrid() at Awake
@@ -54,20 +57,76 @@ public class Grid : MonoBehaviour
                 int movementPenalty = 0;
 
                 //raycast to add terrainpenalty
-                if (walkable)
+
+                Ray ray = new Ray(worldPoint + Vector3.up * 50, Vector3.down);
+                RaycastHit hit;
+                if(Physics.Raycast(ray, out hit, 100, walkableMask))
                 {
-                    Ray ray = new Ray(worldPoint + Vector3.up * 50, Vector3.down);
-                    RaycastHit hit;
-                    if(Physics.Raycast(ray, out hit, 100, walkableMask))
-                    {
-                        walkableRegionDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
-                    }
+                    walkableRegionDictionary.TryGetValue(hit.collider.gameObject.layer, out movementPenalty);
                 }
+
+                if (!walkable)
+                {
+                    movementPenalty += obstacleProximityPenalty;
+                }
+
                 grid[x, y] = new Node(walkable, worldPoint,x , y, movementPenalty);
             }
         }
+
+        BlurPenaltyMap(4);
     }
 
+    private void BlurPenaltyMap(int blurSize)
+    {
+        // kenelExtents is blurSize
+        int kernelSize = blurSize * 2 + 1;
+        int kenelExtents = (kernelSize - 1) / 2;
+
+        int[,] penaltiesHorizontalPass = new int[gridSizeX, gridSizeY];
+        int[,] penaltiesVerticalPass = new int[gridSizeX, gridSizeY];
+
+        for(int y = 0; y < gridSizeY; y++)
+        {
+            for(int x = -kenelExtents; x < kenelExtents; x++)
+            {
+                int sampleX = Mathf.Clamp(x, 0, kenelExtents);
+                penaltiesHorizontalPass[0, y] += grid[sampleX, y].movementPenalty;
+            }
+
+            for(int x = 1; x < gridSizeX; x++)
+            {
+                int removeIndex = Mathf.Clamp(x - kenelExtents - 1, 0, gridSizeX);
+                int addIndex = Mathf.Clamp(x + kenelExtents, 0, gridSizeX - 1);
+
+                penaltiesHorizontalPass[x, y] = penaltiesHorizontalPass[x - 1, y] - grid[removeIndex, y].movementPenalty + grid[addIndex, y].movementPenalty;
+            }
+        }
+
+        for (int x = 0; x < gridSizeX; x++)
+        {
+            for (int y = -kenelExtents; y < kenelExtents; y++)
+            {
+                int sampleY = Mathf.Clamp(y, 0, kenelExtents);
+                penaltiesVerticalPass[x, 0] += penaltiesHorizontalPass[x, sampleY];
+            }
+
+            int blurredPenalty = Mathf.RoundToInt((float)penaltiesVerticalPass[x, 0] / (kernelSize * kernelSize));
+
+            for (int y = 1; y < gridSizeY; y++)
+            {
+                int removeIndex = Mathf.Clamp(y - kenelExtents - 1, 0, gridSizeY);
+                int addIndex = Mathf.Clamp(y + kenelExtents, 0, gridSizeY - 1);
+
+                penaltiesVerticalPass[x, y] = penaltiesVerticalPass[x, y - 1] - penaltiesHorizontalPass[x, removeIndex] + penaltiesHorizontalPass[x, addIndex];
+                blurredPenalty = Mathf.RoundToInt((float)penaltiesVerticalPass[x, y] / (kernelSize * kernelSize));
+                grid[x, y].movementPenalty = blurredPenalty;
+
+                penaltyMax = (penaltyMax < blurredPenalty) ? blurredPenalty : penaltyMax;
+                penaltyMin = (penaltyMin > blurredPenalty) ? blurredPenalty : penaltyMin;
+            }
+        }
+    }
     public List<Node> GetNeighbours(Node node)
     {
         List<Node> neighbours = new List<Node>();
@@ -108,8 +167,10 @@ public class Grid : MonoBehaviour
                 Node playerNode = NodeFromWorldPosition(player.position);
                 foreach (Node n in grid)
                 {
-                    Gizmos.color = (n.walkable) ? Color.white : Color.red;
-                    Gizmos.DrawCube(n.worldPosition, Vector3.one * (nodeDiameter - 0.1f));
+                Gizmos.color = Color.Lerp(Color.white, Color.black, Mathf.InverseLerp(penaltyMin, penaltyMax, n.movementPenalty));
+
+                    Gizmos.color = (n.walkable) ? Gizmos.color : Color.red;
+                    Gizmos.DrawCube(n.worldPosition, Vector3.one * nodeDiameter);
                 }
             }
 

@@ -214,7 +214,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 675081}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 41.3, y: 0, z: 41.3}
+  m_LocalPosition: {x: -39.6, y: 0, z: -40.7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -637,7 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37820f2b853a264bb8f609963a42fa8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  displayGridGizmos: 0
+  displayGridGizmos: 1
   player: {fileID: 1254444006}
   unwalkableMask:
     serializedVersion: 2
@@ -652,10 +652,11 @@ MonoBehaviour:
   - terrainMask:
       serializedVersion: 2
       m_Bits: 512
-    terrainPenalty: 20
+    terrainPenalty: 40
   walkableMask:
     serializedVersion: 2
     m_Bits: 0
+  obstacleProximityPenalty: 10
 --- !u!4 &932459102
 Transform:
   m_ObjectHideFlags: 0
@@ -1069,7 +1070,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1254444002}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -33.6, y: 1, z: -32.6}
+  m_LocalPosition: {x: 38.4, y: 1, z: 43.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1116,7 +1117,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1907220774}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -2.9790514, y: 0, z: 1.060554}
+  m_LocalPosition: {x: -4.47, y: 0, z: 1.060554}
   m_LocalScale: {x: 0.8502678, y: 1, z: 0.5611615}
   m_ConstrainProportionsScale: 0
   m_Children: []
